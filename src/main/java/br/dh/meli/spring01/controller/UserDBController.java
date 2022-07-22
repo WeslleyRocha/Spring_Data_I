@@ -22,19 +22,13 @@ public class UserDBController {
     //Get por ID.
     @GetMapping("/{id}")
     public ResponseEntity<UserBD> buscarPorId(@PathVariable long id) {
-        Optional<UserBD> userFound = service.getUserById(id);
 
-        if (userFound.isPresent()) {
-            return ResponseEntity.ok(userFound.get());
-
-        }
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(service.getUserById(id));
     }
 
     //Post, postar/criar um novo usuario.
     @PostMapping
     public ResponseEntity<UserBD> insertNewUser(@RequestBody UserBD user){
-        //TODO: Validar se o user que vai receber tem o ID: retorna uma exception.
 
         return ResponseEntity.status(HttpStatus.CREATED).body(service.insertUser(user));
     }
@@ -42,18 +36,16 @@ public class UserDBController {
     //Deletar por ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteUser(@PathVariable long id){
-        Optional<UserBD> userFound = service.getUserById(id);
 
-        if (userFound.isPresent()){
             service.deleteUser(id);
             return ResponseEntity.noContent().build();
-        }
-        return ResponseEntity.notFound().build();
     }
+
 
     //GetAll (Listar todos)
     @GetMapping
     public ResponseEntity<List<UserBD>> listAll(){
+
         return ResponseEntity.ok(service.listAll());
     }
 

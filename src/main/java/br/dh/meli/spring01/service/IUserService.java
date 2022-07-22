@@ -7,10 +7,16 @@ import java.util.Optional;
 
 public interface IUserService {
 
-	Optional<UserBD> getUserById(long id);
+	//esses são métodos abstratos que serão implementados na classe "UserService"
+	//Metodo que eu faz o GET por ID
+	UserBD getUserById(long id);
+
+	//Metodo que cria um novo usuario "insertUser"
 	UserBD insertUser(UserBD newUser);
 
+	//Metodo sem retorno "VOID" para deletar o user por id
 	void deleteUser(long id);
 
+	//Metodo que lista todos os usuario.
 	List<UserBD> listAll();
 }

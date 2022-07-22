@@ -1,6 +1,8 @@
 package br.dh.meli.spring01.service;
 
 
+import br.dh.meli.spring01.exception.BadRequestException;
+import br.dh.meli.spring01.exception.UserNotFoundException;
 import br.dh.meli.spring01.model.UserBD;
 import br.dh.meli.spring01.repository.IUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +18,8 @@ public class UserService implements IUserService {
     private IUserRepo repo;
 
     @Override
-    public Optional<UserBD> getUserById(long id) {
-        return repo.findById(id);
+    public UserBD getUserById(long id) {
+        return repo.findById(id).orElseThrow(()-> new UserNotFoundException("ID não encontrado: " + id));
 
     }
 
@@ -25,8 +27,9 @@ public class UserService implements IUserService {
     public UserBD insertUser(UserBD newUser) {
 
     //Verifica se recebeu um USER com ID, caso ele tenha o ID ele rejeita por é um user ja cadastrado.
-    if (newUser.getId() >0) return null;
-
+    if (newUser.getId() >0) {
+        throw new BadRequestException("O campo ID não pode ser preenchido para novos usuarios!");
+    }
         return repo.save(newUser);
 
     }
@@ -34,13 +37,9 @@ public class UserService implements IUserService {
     @Override
     public void deleteUser(long id) {
 
-            //podemos verificar se temos o ID no banco para deletar
-        if (repo.findById(id).isPresent()) {
-            repo.deleteById(id);
+      UserBD userFound = getUserById(id);
+      repo.delete(userFound);
 
-        }
-
-        //TODO tratar a exception
     }
 
     @Override
