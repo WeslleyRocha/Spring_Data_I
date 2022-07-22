@@ -1,21 +1,20 @@
 package br.dh.meli.spring01.service;
 
-
 import br.dh.meli.spring01.exception.BadRequestException;
 import br.dh.meli.spring01.exception.UserNotFoundException;
 import br.dh.meli.spring01.model.UserBD;
-import br.dh.meli.spring01.repository.IUserRepo;
+import br.dh.meli.spring01.repository.IUserBdRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 @Service
 public class UserService implements IUserService {
 
     @Autowired
-    private IUserRepo repo;
+    private IUserBdRepo repo;
 
     @Override
     public UserBD getUserById(long id) {
@@ -45,5 +44,31 @@ public class UserService implements IUserService {
     @Override
     public List<UserBD> listAll() {
         return (List<UserBD>) repo.findAll();
+    }
+
+    @Override
+    public UserBD update(UserBD updateUser){
+        UserBD userFound = getUserById(updateUser.getId());
+
+        return repo.save(updateUser);
+    }
+
+    @Override
+    public UserBD updatePartial(long id, Map<String,String> changes){
+        UserBD userFound = getUserById(id);
+
+        changes.forEach((atributo, valor) -> {
+            switch (atributo){
+                case "nome":  userFound.setName(valor);break;
+                case "email": userFound.setEmail(valor);break;
+            }
+        });
+
+       return repo.save(userFound);
+    }
+
+    @Override
+    public UserBD findByEmail(String email) {
+        return repo.findByEmail(email);
     }
 }

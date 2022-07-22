@@ -9,7 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+
 
 @RestController
 @CrossOrigin("*") // essa anotação é pra dizer que é pra aceitar requisições de qualquer lugar
@@ -24,6 +25,14 @@ public class UserDBController {
     public ResponseEntity<UserBD> buscarPorId(@PathVariable long id) {
 
         return ResponseEntity.ok(service.getUserById(id));
+    }
+
+
+    //Get por Email
+    @GetMapping("/email/{email}")
+    public ResponseEntity<UserBD> buscarPorId(@PathVariable String email) {
+
+        return ResponseEntity.ok(service.findByEmail(email));
     }
 
     //Post, postar/criar um novo usuario.
@@ -41,7 +50,6 @@ public class UserDBController {
             return ResponseEntity.noContent().build();
     }
 
-
     //GetAll (Listar todos)
     @GetMapping
     public ResponseEntity<List<UserBD>> listAll(){
@@ -49,6 +57,18 @@ public class UserDBController {
         return ResponseEntity.ok(service.listAll());
     }
 
+
+    @PutMapping
+    public ResponseEntity<UserBD> updateUser(@RequestBody UserBD user){
+
+        return ResponseEntity.ok(service.update(user));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserBD> updateUser(@PathVariable long id, @RequestBody Map<String, String> changes){
+
+        return ResponseEntity.ok(service.updatePartial(id, changes));
+    }
 // Possibilidade de fazer utilizando a URI
 
 //    @PostMapping()
